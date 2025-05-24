@@ -62,18 +62,27 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val login = intent.getStringExtra("login")!!
+        val password = intent.getStringExtra("password")!!
+
         scope.launch {
             try {
 //                attentifyClient.login("teacher2@example.com", "teacherpassword")
-                attentifyClient.login("student1@example.com", "studentpassword")
+                attentifyClient.login(login, password)
 
-                var schedule = attentifyClient.getScheduleDay("2025-05-20")
-                Log.e("SCHEDULE", schedule.toString())
+//                var schedule = attentifyClient.getScheduleDay("2025-05-20")
+//                Log.e("SCHEDULE", schedule.toString())
                 var me = attentifyClient.getMe()
+
+                binding.toolbar.title = me.email
                 Log.e("Login: ", me.email)
                 Log.e("ID: ", me.id.toString())
             } catch (e: ConnectionException) {
+                Snackbar.make(binding.fab, R.string.fetch_failure, Snackbar.LENGTH_LONG)
+                    .setAnchorView(R.id.fab).show()
+
                 Log.e("BaseClient", e.toString())
+
             }
         }
 
@@ -88,9 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener { view ->
             scanCode()
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null)
-//                .setAnchorView(R.id.fab).show()
         }
     }
 

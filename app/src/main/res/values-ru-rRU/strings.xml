@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StudQR</string>
+    <string name="action_settings">Настройки</string>
+
+    <string name="next">Вперед</string>
+    <string name="previous">Назад</string>
+
+    <string name="login_button">Войти</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="fetch_failure">Не удалось загрузить данные</string>
+
+
+</resources>

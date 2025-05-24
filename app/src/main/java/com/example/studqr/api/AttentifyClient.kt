@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BearerToken(
-    val access_token: String,
-    val token_type: String
+    val access_token: String, val token_type: String
 )
 
 @Serializable
@@ -33,17 +32,12 @@ data class Lesson(
 
 @Serializable
 data class LessonPeriod(
-    val id: Int,
-    val lesson_number: Int,
-    val start_time: String,
-    val end_time: String
+    val id: Int, val lesson_number: Int, val start_time: String, val end_time: String
 )
 
 @Serializable
 data class Subject(
-    val id: Int,
-    val name: Multilang,
-    val description: Multilang
+    val id: Int, val name: Multilang, val description: Multilang
 )
 
 @Serializable
@@ -58,55 +52,42 @@ data class Teacher(
 
 @Serializable
 data class LessonType(
-    val id: Int,
-    val name: Multilang
+    val id: Int, val name: Multilang
 )
 
 @Serializable
 data class Location(
-    val site: Site,
-    val room_number: String,
-    val is_virtual: Boolean
+    val site: Site, val room_number: String, val is_virtual: Boolean
 )
 
 @Serializable
 data class Site(
-    val id: Int,
-    val name: Multilang,
-    val description: Multilang
+    val id: Int, val name: Multilang, val description: Multilang
 )
 
 @Serializable
 data class Schedule(
-    val term_id: Int,
-    val day_of_week: DayOfWeek,
-    val week_type: WeekType
+    val term_id: Int, val day_of_week: DayOfWeek, val week_type: WeekType
 )
 
 @Serializable
 data class DayOfWeek(
-    val id: Int,
-    val day_number: Int,
-    val name: Multilang
+    val id: Int, val day_number: Int, val name: Multilang
 )
 
 @Serializable
 data class WeekType(
-    val id: Int,
-    val name: Multilang
+    val id: Int, val name: Multilang
 )
 
 @Serializable
 data class Group(
-    val id: Int,
-    val name: Multilang,
-    val description: Multilang
+    val id: Int, val name: Multilang, val description: Multilang
 )
 
 @Serializable
 data class Multilang(
-    val ru: String?,
-    val en: String?
+    val ru: String?, val en: String?
 )
 
 
@@ -121,10 +102,9 @@ class AttentifyClient : BaseClient() {
         val bearerToken: BearerToken = postForm("auth/jwt/login", body)
         token = bearerToken.access_token
         cHeaders[HttpHeaders.Authorization] = "Bearer $token"
-        Log.e("FUCK FUCK", cHeaders.toString())
 
-        val kuki: String = postForm("auth/jwt/login", body)
-        Log.e("FUCK FUCK pechenka", kuki)
+//        val kuki: String = postForm("auth/cookie/login", body)
+//        Log.e("pechenka", kuki)
     }
 
     suspend fun getScheduleDay(date: String): List<Lesson> {

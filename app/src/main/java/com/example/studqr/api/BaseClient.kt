@@ -15,8 +15,6 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.Serializable
 import io.ktor.serialization.kotlinx.json.*
 
-//import io.ktor.client.plugins.resources.*
-
 class ConnectionException(message: String) : Exception(message)
 
 abstract class BaseClient {
@@ -26,7 +24,6 @@ abstract class BaseClient {
 
     val client: HttpClient by lazy {
         HttpClient {
-//            install(Resources)
             install(ContentNegotiation) {
                 json(Json {
                     ignoreUnknownKeys = true
@@ -45,8 +42,6 @@ abstract class BaseClient {
             contentType(ContentType.Application.Json)
             setBody(payload)
             cHeaders.forEach { (key, value) ->
-//                Log.e("FUCK FUCK", key)
-//                Log.e("FUCK FUCK", value)
                 header(key, value)
             }
         }
@@ -63,56 +58,57 @@ abstract class BaseClient {
         endpoint: String,
         formParameters: Map<String, String>,
     ): T {
-        lateinit var response: HttpResponse
-        response = client.post("$baseUrl/$endpoint") {
-            contentType(ContentType.Application.FormUrlEncoded)
-            setBody(FormDataContent(Parameters.build {
-                formParameters.forEach { (key, value) ->
-                    append(
-                        key,
-                        value
-                    )
+        try {
+            lateinit var response: HttpResponse
+            response = client.post("$baseUrl/$endpoint") {
+                contentType(ContentType.Application.FormUrlEncoded)
+                setBody(FormDataContent(Parameters.build {
+                    formParameters.forEach { (key, value) ->
+                        append(
+                            key, value
+                        )
+                    }
+                }))
+                cHeaders.forEach { (key, value) ->
+                    header(key, value)
                 }
-            }))
-            cHeaders.forEach { (key, value) ->
-//                Log.e("FUCK FUCK", key)
-//                Log.e("FUCK FUCK", value)
-                header(key, value)
             }
-        }
 
-        Log.e("BaseClient", response.toString())
-        if (response.status.value >= 300) {
-            throw ConnectionException(response.status.toString() + response.body<String>())
-        }
+            Log.e("BaseClient", response.toString())
+            if (response.status.value >= 300) {
+                throw ConnectionException(response.status.toString() + response.body<String>())
+            }
 
-        return response.body<T>()
+            return response.body<T>()
+        } catch (err: java.nio.channels.UnresolvedAddressException) {
+            throw ConnectionException(err.toString())
+        }
     }
 
 
     suspend inline fun <reified T> get(
-        endpoint: String,
-        queryParams: Map<String, String> = emptyMap()
+        endpoint: String, queryParams: Map<String, String> = emptyMap()
     ): T {
-        lateinit var response: HttpResponse
-        response = client.get ("$baseUrl/$endpoint") {
-//            contentType(ContentType.Application.Json)
-            url {
-                queryParams.forEach { (key, value) ->
-                    parameters.append(key, value.toString())
+        try {
+            lateinit var response: HttpResponse
+            response = client.get("$baseUrl/$endpoint") {
+                url {
+                    queryParams.forEach { (key, value) ->
+                        parameters.append(key, value.toString())
+                    }
+                }
+                cHeaders.forEach { (key, value) ->
+                    header(key, value)
                 }
             }
-            cHeaders.forEach { (key, value) ->
-//                Log.e("FUCK FUCK", key)
-//                Log.e("FUCK FUCK", value)
-                header(key, value)
+            Log.e("BaseClient", response.toString())
+            if (response.status.value >= 300) {
+                throw ConnectionException(response.status.toString() + response.body<String>())
             }
-        }
-        Log.e("BaseClient", response.toString())
-        if (response.status.value >= 300) {
-            throw ConnectionException(response.status.toString() + response.body<String>())
-        }
 
-        return response.body<T>()
+            return response.body<T>()
+        } catch (err: java.nio.channels.UnresolvedAddressException) {
+            throw ConnectionException(err.toString())
+        }
     }
 }
