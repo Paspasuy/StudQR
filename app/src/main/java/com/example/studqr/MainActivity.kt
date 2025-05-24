@@ -7,30 +7,36 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.studqr.api.AttentifyClient
 import com.example.studqr.api.ConnectionException
+import com.example.studqr.api.Lesson
 import com.example.studqr.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 
+object SessionManager {
+    val scheduleDeferred = CompletableDeferred<AttentifyClient>()
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+}
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private var attentifyClient = AttentifyClient()
-
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
+    internal var attentifyClient = AttentifyClient()
 
     var barcodeLauncher = registerForActivityResult<ScanOptions?, ScanIntentResult?>(
         ScanContract(),
@@ -65,35 +71,32 @@ class MainActivity : AppCompatActivity() {
         val login = intent.getStringExtra("login")!!
         val password = intent.getStringExtra("password")!!
 
-        scope.launch {
+        SessionManager.scope.launch {
             try {
-//                attentifyClient.login("teacher2@example.com", "teacherpassword")
                 attentifyClient.login(login, password)
+                SessionManager.scheduleDeferred.complete(attentifyClient)
 
-//                var schedule = attentifyClient.getScheduleDay("2025-05-20")
-//                Log.e("SCHEDULE", schedule.toString())
                 var me = attentifyClient.getMe()
-
                 binding.toolbar.title = me.email
+
                 Log.e("Login: ", me.email)
                 Log.e("ID: ", me.id.toString())
             } catch (e: ConnectionException) {
                 Snackbar.make(binding.fab, R.string.fetch_failure, Snackbar.LENGTH_LONG)
                     .setAnchorView(R.id.fab).show()
-
                 Log.e("BaseClient", e.toString())
-
+                SessionManager.scheduleDeferred.completeExceptionally(e)
             }
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        findViewById<ComposeView>(R.id.compose_view).setContent {
+            ScheduleComponent()
+        }
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(binding.toolbar)
 
         binding.fab.setOnClickListener { view ->
             scanCode()
@@ -116,9 +119,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
 }
