@@ -26,11 +26,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.collections.get
 
 
 object SessionManager {
     val scheduleDeferred = CompletableDeferred<AttentifyClient>()
     val scope = CoroutineScope(Job() + Dispatchers.Main)
+    var currentLanguage = "en"
 }
 
 class MainActivity : AppCompatActivity() {
@@ -60,12 +62,14 @@ class MainActivity : AppCompatActivity() {
         options.setTorchEnabled(false)
         options.setOrientationLocked(true)
 
-        options.setPrompt("Отсканируйте QR чтобы отметиться");
+        options.setPrompt(getString(R.string.scan_qr));
 
         barcodeLauncher.launch(options)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SessionManager.currentLanguage = resources.configuration.locales.get(0).language
+
         super.onCreate(savedInstanceState)
 
         val login = intent.getStringExtra("login")!!

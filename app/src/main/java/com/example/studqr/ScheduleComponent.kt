@@ -22,9 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.studqr.SessionManager.currentLanguage
 import com.example.studqr.api.AttentifyClient
 import com.example.studqr.api.Lesson
+import com.example.studqr.api.getLoc
 import kotlinx.coroutines.launch
 
 suspend fun getLessonData(): List<Lesson> {
@@ -56,6 +59,7 @@ fun ScheduleComponent() {
 
 @Composable
 fun LessonCard(lesson: Lesson) {
+    val lang = currentLanguage
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,9 +67,9 @@ fun LessonCard(lesson: Lesson) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = lesson.subject.name.en!!, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Teacher: ${lesson.teacher.first_name.en} ${lesson.teacher.last_name.en}")
-            Text(text = "Room: ${lesson.location.room_number}")
+            Text(text = getLoc(lesson.subject.name, lang), style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.teacher) + ": ${getLoc(lesson.teacher.first_name, lang)} ${getLoc(lesson.teacher.last_name, lang)}")
+            Text(text = stringResource(R.string.room) + ": ${lesson.location.room_number}")
             Text(
                 text = "${lesson.lesson_period.start_time} - ${lesson.lesson_period.end_time}",
                 style = MaterialTheme.typography.bodySmall

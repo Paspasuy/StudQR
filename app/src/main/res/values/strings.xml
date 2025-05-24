@@ -13,6 +13,9 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="fetch_failure">Failed to fetch data</string>
+    <string name="scan_qr">Scan QR code to check in</string>
+    <string name="teacher">Teacher</string>
+    <string name="room">Classroom</string>
 
 
 </resources>

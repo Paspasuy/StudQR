@@ -90,6 +90,13 @@ data class Multilang(
     val ru: String?, val en: String?
 )
 
+fun getLoc(value: Multilang, locale: String): String {
+    val result = when (locale) {
+        "ru" -> value.ru ?: value.en
+        else -> value.en ?: value.ru
+    }
+    return result!!
+}
 
 class AttentifyClient : BaseClient() {
 

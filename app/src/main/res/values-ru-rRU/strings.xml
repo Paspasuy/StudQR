@@ -10,6 +10,9 @@
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="fetch_failure">Не удалось загрузить данные</string>
+    <string name="scan_qr">Отсканируйте QR чтобы отметиться</string>
+    <string name="teacher">Учитель</string>
+    <string name="room">Аудитория</string>
 
 
 </resources>
