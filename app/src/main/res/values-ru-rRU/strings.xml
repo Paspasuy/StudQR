@@ -13,6 +13,10 @@
     <string name="scan_qr">Отсканируйте QR чтобы отметиться</string>
     <string name="teacher">Учитель</string>
     <string name="room">Аудитория</string>
+    <string name="cancelled">Отмена</string>
+    <string name="checkin_success">Успешно отмечен!</string>
+    <string name="checkin_double">Уже отмечен</string>
+    <string name="checkin_failure">Не получилось отметиться. Попробуйте еще раз</string>
 
 
 </resources>

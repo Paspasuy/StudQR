@@ -1,6 +1,5 @@
 package com.example.studqr.api
 
-import android.net.http.HttpResponseCache.install
 import android.util.Log
 import kotlin.getValue
 
@@ -12,10 +11,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.Serializable
 import io.ktor.serialization.kotlinx.json.*
 
-class ConnectionException(message: String) : Exception(message)
+class ConnectionException(message: String, val statusCode: Int) : Exception(message)
 
 abstract class BaseClient {
     abstract val baseUrl: String
@@ -48,7 +46,9 @@ abstract class BaseClient {
         Log.e("BaseClient", response.toString())
 
         if (response.status.value >= 300) {
-            throw ConnectionException(response.status.toString() + response.body<String>())
+            throw ConnectionException(
+                response.status.toString() + response.body<String>(), response.status.value
+            )
         }
 
         return response.body<T>()
@@ -76,12 +76,14 @@ abstract class BaseClient {
 
             Log.e("BaseClient", response.toString())
             if (response.status.value >= 300) {
-                throw ConnectionException(response.status.toString() + response.body<String>())
+                throw ConnectionException(
+                    response.status.toString() + response.body<String>(), response.status.value
+                )
             }
 
             return response.body<T>()
         } catch (err: java.nio.channels.UnresolvedAddressException) {
-            throw ConnectionException(err.toString())
+            throw ConnectionException(err.toString(), 0)
         }
     }
 
@@ -103,12 +105,14 @@ abstract class BaseClient {
             }
             Log.e("BaseClient", response.toString())
             if (response.status.value >= 300) {
-                throw ConnectionException(response.status.toString() + response.body<String>())
+                throw ConnectionException(
+                    response.status.toString() + response.body<String>(), response.status.value
+                )
             }
 
             return response.body<T>()
         } catch (err: java.nio.channels.UnresolvedAddressException) {
-            throw ConnectionException(err.toString())
+            throw ConnectionException(err.toString(), 0)
         }
     }
 }

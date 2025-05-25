@@ -73,9 +73,3 @@ class ApplicationLanguageHelper(base: Context) : ContextThemeWrapper(base, R.sty
         }
     }
 }
-
-//@Composable
-//fun currentLanguage(): String {
-//    val configuration = LocalConfiguration.current
-//    return configuration.locales[0].language
-//}

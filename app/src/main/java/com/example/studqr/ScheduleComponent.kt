@@ -68,7 +68,6 @@ suspend fun getLessonData(date: String): List<Lesson> {
 @Composable
 fun ScheduleComponent(baseDate: String = LocalDate.now().toString()) {
 
-    var baseDate = "2025-05-20"
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val baseLocalDate = LocalDate.parse(baseDate, formatter)
 
@@ -84,14 +83,12 @@ fun ScheduleComponent(baseDate: String = LocalDate.now().toString()) {
 
     Column(modifier = Modifier.fillMaxWidth()) {
         WeekDateSelector(
-            baseDate = baseDate,
-            selectedDate = selectedDate,
-            onDateSelected = { selected ->
+            baseDate = baseDate, selectedDate = selectedDate, onDateSelected = { selected ->
                 selectedDate = selected
                 val index = weekDates.indexOf(selected)
                 if (index != -1) {
                     coroutineScope.launch {
-                        pagerState.animateScrollToPage(index, )
+                        pagerState.animateScrollToPage(index)
                     }
                 }
             })
@@ -110,12 +107,10 @@ fun ScheduleComponent(baseDate: String = LocalDate.now().toString()) {
 
             }
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Top
+                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top
             ) {
-            DayScheduleComponent(date = date.format(formatter))
-                }
+                DayScheduleComponent(date = date.format(formatter))
+            }
         }
     }
 }
@@ -158,7 +153,7 @@ fun WeekDateSelector(
                 (index * (buttonWidthDp + spacingDp).toPx()).toInt()
             }
             val offsetLeftPx = with(density) {
-                (- screenWidth.toPx() + (index + 2) * (buttonWidthDp + spacingDp).toPx()).toInt()
+                (-screenWidth.toPx() + (index + 2) * (buttonWidthDp + spacingDp).toPx()).toInt()
             }
             if ((offsetLeftPx > offsetPx) || (offsetRightPx < offsetPx)) {
                 offsetPx = if (offsetLeftPx > offsetPx) {
@@ -243,8 +238,7 @@ fun DayScheduleComponent(date: String) {
 
     if (lessons != null) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top
+            modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Top
         ) {
             items(lessons ?: emptyList()) { lesson ->
                 LessonCard(lesson = lesson)
@@ -254,8 +248,7 @@ fun DayScheduleComponent(date: String) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-
-        ) {
+            ) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .padding(16.dp)

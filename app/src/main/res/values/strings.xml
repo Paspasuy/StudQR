@@ -16,6 +16,10 @@
     <string name="scan_qr">Scan QR code to check in</string>
     <string name="teacher">Teacher</string>
     <string name="room">Classroom</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="checkin_success">Successfully checked in</string>
+    <string name="checkin_double">Already checked in</string>
+    <string name="checkin_failure">Failed to check in. Try again</string>
 
 
 </resources>

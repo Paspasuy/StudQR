@@ -109,9 +109,6 @@ class AttentifyClient : BaseClient() {
         val bearerToken: BearerToken = postForm("auth/jwt/login", body)
         token = bearerToken.access_token
         cHeaders[HttpHeaders.Authorization] = "Bearer $token"
-
-//        val kuki: String = postForm("auth/cookie/login", body)
-//        Log.e("pechenka", kuki)
     }
 
     suspend fun getScheduleDay(date: String): List<Lesson> {
@@ -122,5 +119,9 @@ class AttentifyClient : BaseClient() {
     suspend fun getMe(): User {
         val me: User = get("users/me")
         return me
+    }
+
+    suspend fun checkIn(data: String) {
+        post<String>("attendance/confirm", data)
     }
 }

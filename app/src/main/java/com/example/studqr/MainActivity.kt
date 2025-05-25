@@ -8,10 +8,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.studqr.api.AttentifyClient
 import com.example.studqr.api.ConnectionException
 import com.example.studqr.api.Lesson
@@ -20,13 +16,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import io.ktor.client.network.sockets.ConnectTimeoutException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.collections.get
 import kotlin.collections.mutableMapOf
 
 
@@ -43,19 +38,32 @@ class MainActivity : AppCompatActivity() {
     internal var attentifyClient = AttentifyClient()
 
     var barcodeLauncher = registerForActivityResult<ScanOptions?, ScanIntentResult?>(
-        ScanContract(),
-        ActivityResultCallback { result: ScanIntentResult? ->
+        ScanContract(), ActivityResultCallback { result: ScanIntentResult? ->
             if (result!!.getContents() == null) {
-                Toast.makeText(this@MainActivity, "Cancelled", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MainActivity, getString(R.string.cancelled), Toast.LENGTH_LONG)
+                    .show()
             } else {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Scanned: " + result.getContents(),
-                    Toast.LENGTH_LONG
-                ).show()
+                val resultString = result.getContents()
+
+                SessionManager.scope.launch {
+                    var result = R.string.checkin_success
+                    try {
+                        attentifyClient.checkIn(resultString)
+                    } catch (e: ConnectionException) {
+                        Log.e("BaseClient", e.toString())
+                        if (e.statusCode == 409) {
+                            result = R.string.checkin_double
+                        } else {
+                            result = R.string.checkin_failure
+                        }
+                    } catch (e: ConnectTimeoutException) {
+                        result = R.string.checkin_failure
+                    }
+                    Snackbar.make(binding.fab, result, Snackbar.LENGTH_LONG).setAnchorView(R.id.fab)
+                        .show()
+                }
             }
-        }
-    )
+        })
 
     fun scanCode() {
         var options = ScanOptions()
