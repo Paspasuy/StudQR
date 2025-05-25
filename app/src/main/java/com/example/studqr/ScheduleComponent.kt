@@ -91,7 +91,7 @@ fun ScheduleComponent(baseDate: String = LocalDate.now().toString()) {
                 val index = weekDates.indexOf(selected)
                 if (index != -1) {
                     coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
+                        pagerState.animateScrollToPage(index, )
                     }
                 }
             })
@@ -109,8 +109,13 @@ fun ScheduleComponent(baseDate: String = LocalDate.now().toString()) {
                 selectedDate = weekDates[pagerState.currentPage]
 
             }
-
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Top
+            ) {
             DayScheduleComponent(date = date.format(formatter))
+                }
         }
     }
 }
@@ -246,17 +251,16 @@ fun DayScheduleComponent(date: String) {
             }
         }
     } else {
-        LazyColumn(
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top
+            horizontalArrangement = Arrangement.Center,
+
         ) {
-            items(listOf(1)) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .width(64.dp),
-                )
-            }
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .width(64.dp),
+            )
         }
     }
 
