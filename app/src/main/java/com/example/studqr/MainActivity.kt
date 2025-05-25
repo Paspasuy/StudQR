@@ -27,12 +27,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.collections.get
+import kotlin.collections.mutableMapOf
 
 
 object SessionManager {
     val scheduleDeferred = CompletableDeferred<AttentifyClient>()
     val scope = CoroutineScope(Job() + Dispatchers.Main)
     var currentLanguage = "en"
+    var lessonCache = mutableMapOf<String, List<Lesson>>()
 }
 
 class MainActivity : AppCompatActivity() {

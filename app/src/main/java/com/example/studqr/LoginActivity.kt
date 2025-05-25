@@ -16,7 +16,7 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setAppLocale2("ru", this)
+//        setAppLocale2("ru", this)
         enableEdgeToEdge()
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
