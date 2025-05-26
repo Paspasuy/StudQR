@@ -129,6 +129,18 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_english -> {
+                setAppLocale2("en", this)
+                finish();
+                startActivity(getIntent());
+                true
+            }
+            R.id.action_russian -> {
+                setAppLocale2("ru", this)
+                finish();
+                startActivity(getIntent());
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -20,6 +20,8 @@
     <string name="checkin_success">Successfully checked in</string>
     <string name="checkin_double">Already checked in</string>
     <string name="checkin_failure">Failed to check in. Try again</string>
+    <string name="action_english">English</string>
+    <string name="action_russian">Русский</string>
 
 
 </resources>

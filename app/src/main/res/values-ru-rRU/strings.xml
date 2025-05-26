@@ -17,6 +17,8 @@
     <string name="checkin_success">Успешно отмечен!</string>
     <string name="checkin_double">Уже отмечен</string>
     <string name="checkin_failure">Не получилось отметиться. Попробуйте еще раз</string>
+    <string name="action_english">English</string>
+    <string name="action_russian">Русский</string>
 
 
 </resources>
